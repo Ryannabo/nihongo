@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nihon-GO! - Sakura</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #ffeef8 0%, #ffe4f1 30%, #f8d7da 70%, #e8c5ca 100%);
+      color: #2d1b2e;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Traditional Japanese pattern overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255, 182, 193, 0.1) 0%, transparent 25%),
+        radial-gradient(circle at 75% 75%, rgba(255, 192, 203, 0.08) 0%, transparent 25%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Animated sakura petals */
+    .sakura-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .sakura-petal {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #ffb6c1;
+      border-radius: 0 100% 0 100%;
+      transform: rotate(45deg);
+      opacity: 0.8;
+      animation: sakuraFall linear infinite;
+      box-shadow: 0 0 10px rgba(255, 182, 193, 0.3);
+    }
+
+    .sakura-petal::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      width: 12px;
+      height: 12px;
+      background: #ffc0cb;
+      border-radius: 0 100% 0 100%;
+      transform: rotate(30deg);
+    }
+
+    @keyframes sakuraFall {
+      0% {
+        transform: translateY(-100vh) rotate(45deg) rotateX(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.8;
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(100vh) rotate(405deg) rotateX(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Main container */
+    .container {
+      position: relative;
+      z-index: 3;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+      text-align: center;
+      min-height: 100vh;
+    }
+
+    /* Header Section */
+    .header-section {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin-bottom: 4rem;
+    }
+
+    /* Traditional Japanese title styling */
+    .game-title {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900;
+      background: linear-gradient(45deg, #d63384, #e91e63, #f06292, #f8bbd9);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: sakuraGradient 4s ease-in-out infinite;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 20px rgba(214, 51, 132, 0.3);
+      position: relative;
+      font-family: 'Noto Sans JP', serif;
+      letter-spacing: 0.1em;
+    }
+
+    @keyframes sakuraGradient {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .game-title::after {
+      content: '🌸';
+      position: absolute;
+      top: -0.8em;
+      right: -0.5em;
+      font-size: 0.4em;
+      opacity: 0.7;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .subtitle {
+      font-size: 1.5rem;
+      color: #8e44ad;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out 0.5s forwards;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Content Grid */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    /* Panel Base Styles */
+    .vid-panel {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255, 182, 193, 0.3);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 
+        0 20px 40px rgba(214, 51, 132, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255, 182, 193, 0.3);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 
+        0 20px 40px rgba(214, 51, 132, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(255, 182, 193, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 80% 80%, rgba(248, 187, 217, 0.1) 0%, transparent 20%);
+      pointer-events: none;
+    }
+
+    .panel:hover {
+      transform: translateY(-4px);
+      box-shadow: 
+        0 25px 50px rgba(214, 51, 132, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .panel-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #d63384;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Slideshow Panel */
+    .slideshow-panel {
+      grid-column: 1 / -1;
+    }
+
+    .slideshow-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      margin: 1rem 0;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(214, 51, 132, 0.2);
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .slide.active {
+      display: block;
+      animation: slideIn 0.5s ease-in-out;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+
+    .slide-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.7));
+      color: white;
+      padding: 2rem 1.5rem 1rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .slideshow-controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .control-btn {
+      background: linear-gradient(135deg, #e91e63, #f06292);
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+
+    .control-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+    }
+
+    .slide-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(214, 51, 132, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .indicator.active {
+      background: #d63384;
+      transform: scale(1.2);
+    }
+
+    /* Video Panel */
+    .video-container {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      margin: 1rem 0;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(214, 51, 132, 0.2);
+    }
+
+    .video-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #f8bbd9, #e91e63);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .video-placeholder:hover {
+      transform: scale(1.02);
+    }
+
+    .play-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.8;
+    }
+
+    /* Description Panel */
+    .description-content {
+      position: relative;
+      z-index: 1;
+      line-height: 1.6;
+      color: #2d1b2e;
+    }
+
+    .description-content p {
+      margin-bottom: 1rem;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin: 1rem 0;
+    }
+
+    .feature-list li {
+      padding: 0.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .feature-list li::before {
+      content: '🌸';
+      font-size: 1rem;
+    }
+
+    .developers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dev-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 182, 193, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 
+                0 15px 35px rgba(214, 51, 132, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dev-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 182, 193, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .dev-card:hover::before {
+            left: 100%;
+        }
+
+        .dev-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 25px 50px rgba(214, 51, 132, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border-color: rgba(233, 30, 99, 0.4);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .dev-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            border: 4px solid rgba(255, 182, 193, 0.3);
+            box-shadow: 0 8px 24px rgba(214, 51, 132, 0.15);
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f8bbd9, #d63384);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .dev-image::after {
+            content: '🌸';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 1rem;
+            opacity: 0.6;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .dev-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .dev-card:hover .dev-image {
+            transform: scale(1.05);
+            box-shadow: 0 12px 32px rgba(214, 51, 132, 0.25);
+            border-color: rgba(233, 30, 99, 0.5);
+        }
+
+        .dev-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #d63384;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dev-role {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #8e44ad;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+        }
+
+        .dev-description {
+            color: #5d4e75;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dev-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, #f8bbd9, #e91e63);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .social-link {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f8bbd9, #d63384);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 182, 193, 0.3);
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 8px 20px rgba(214, 51, 132, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .panel {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .panel-title {
+                font-size: 2rem;
+            }
+            
+            .developers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dev-image {
+                width: 100px;
+                height: 100px;
+            }
+            
+            body {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .panel {
+                padding: 1.5rem;
+            }
+            
+            .dev-card {
+                padding: 1.5rem;
+            }
+            
+            .dev-skills {
+                justify-content: center;
+            }
+        }
+
+    /* Original GitHub section */
+    .github-section {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255, 182, 193, 0.3);
+      border-radius: 20px;
+      padding: 3rem;
+      margin: 2rem 0;
+      box-shadow: 
+        0 20px 40px rgba(214, 51, 132, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .github-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(255, 182, 193, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 80% 80%, rgba(248, 187, 217, 0.1) 0%, transparent 20%);
+      pointer-events: none;
+    }
+
+    /* GitHub link with Japanese aesthetic */
+    .github-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #8e44ad;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      padding: 1rem 2rem;
+      border: 2px solid rgba(142, 68, 173, 0.2);
+      border-radius: 25px;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .github-link::before {
+      content: '🌸';
+      position: absolute;
+      left: 10px;
+      font-size: 0.8em;
+      opacity: 0.6;
+      transition: all 0.3s ease;
+    }
+
+    .github-link:hover {
+      color: #d63384;
+      border-color: #e91e63;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(142, 68, 173, 0.2);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .github-link:hover::before {
+      transform: rotate(360deg);
+      opacity: 1;
+    }
+
+    /* Traditional Japanese counter design */
+    .download-stats {
+      margin-top: 2rem;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 182, 193, 0.3);
+      position: relative;
+      backdrop-filter: blur(10px);
+    }
+
+    .download-stats::before {
+      content: 'Visitor Count';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 0.3rem 1rem;
+      font-size: 0.8rem;
+      color: #8e44ad;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 182, 193, 0.3);
+    }
+
+    .download-count {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #d63384;
+      text-shadow: 0 0 15px rgba(214, 51, 132, 0.3);
+      margin-bottom: 0.5rem;
+      animation: sakuraPulse 3s ease-in-out infinite;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+
+    @keyframes sakuraPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.03); opacity: 0.9; }
+    }
+
+    .download-label {
+      color: #8e44ad;
+      font-size: 1rem;
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .slideshow-container {
+        height: 250px;
+      }
+      
+      .video-container {
+        height: 300px;
+      }
+      
+      .panel {
+        padding: 1.5rem;
+      }
+      
+      .panel-title {
+        font-size: 1.3rem;
+      }
+      
+      .container {
+        padding: 1rem;
+      }
+      
+      .github-section {
+        padding: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .slideshow-container {
+        height: 200px;
+      }
+      
+      .video-container {
+        height: 150px;
+      }
+      
+      .panel {
+        padding: 1rem;
+      }
+      
+      .dev-links {
+        justify-content: center;
+      }
+    }
+
+    /* Loading and success animations */
+    .loading {
+      opacity: 0.5;
+      animation: loadingPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes loadingPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .success-animation {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 182, 193, 0.95);
+      color: #2d1b2e;
+      padding: 2rem;
+      border-radius: 16px;
+      font-weight: 500;
+      font-size: 1.2rem;
+      z-index: 1000;
+      animation: successPop 0.5s ease-out;
+      border: 2px solid rgba(233, 30, 99, 0.3);
+      box-shadow: 0 20px 40px rgba(214, 51, 132, 0.2);
+    }
+
+    @keyframes successPop {
+      0% { transform: translate(-50%, -50%) scale(0); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .error-message {
+      color: #e74c3c;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="sakura-container" id="sakuraContainer"></div>
+
+  <div class="container">
+    <!-- Header Section -->
+    <div class="header-section">
+      <h1 class="game-title">Nihon-GO!</h1>
+      <p class="subtitle">Explore Japan in Three Different Era • A Japanese Learning Adventure</p>
+    </div>
+
+    <!-- GitHub Section -->
+    <div class="github-section">
+      <a href="#" class="github-link" id="githubBtn">
+        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+        View on GitHub
+      </a>
+      
+      <div class="download-stats">
+        <div class="download-count" id="downloadCount">Loading...</div>
+        <div class="download-label">GitHub Visits</div>
+        <div class="error-message" id="errorMessage" style="display: none;"></div>
+      </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+      <!-- Slideshow Panel -->
+      <div class="panel slideshow-panel">
+        <h2 class="panel-title">🖼️ Game Screenshots</h2>
+        <div class="slideshow-container">
+          <div class="slide active">
+            <img src="/images/1.jpg" alt="Game Screenshot 1">
+            <div class="slide-caption">Beautiful Japanese landscapes await you in Nihon-GO!</div>
+          </div>
+          <div class="slide">
+            <img src="/images/2.jpg" alt="Game Screenshot 2">
+            <div class="slide-caption">Learn Japanese through interactive conversations with locals</div>
+          </div>
+          <div class="slide">
+            <img src="/images/3.jpg" alt="Game Screenshot 3">
+            <div class="slide-caption">Explore traditional Japanese architecture and culture</div>
+          </div>
+        </div>
+        <div class="slideshow-controls">
+          <button class="control-btn" id="prevBtn">← Previous</button>
+          <button class="control-btn" id="nextBtn">Next →</button>
+        </div>
+        <div class="slide-indicators" id="indicators"></div>
+      </div>
+
+      <!-- Video Panel -->
+       <div class="panel">
+        <div class="vid-container">
+          <iframe 
+            width="100%" 
+            height="300" 
+            src="https://www.youtube.com/embed/t1ZtN6UjWbg" 
+            frameborder="0" 
+            allowfullscreen>
+          </iframe>
+          <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+             Watch as players embark on an immersive adventure through Nihon-GO!, exploring stunning Japanese landscapes that bring the country’s rich history and culture to life. From ancient temples and bustling towns to serene countryside vistas, each environment is carefully crafted to provide a visually captivating backdrop for language learning and cultural discovery.
+          </p>
+        </div>
+      </div>
+
+      <!-- Description Panel -->
+      <div class="panel">
+        <h2 class="panel-title">📖 About the Game</h2>
+        <div class="description-content">
+          <p>Nihon-GO! takes players on an immersive journey through Japan across three distinct historical eras. Designed as a language-learning adventure game, it seamlessly blends cultural exploration with interactive gameplay to make studying Japanese both engaging and effective.</p>
+          
+          <p><strong>Key Features:</strong></p>
+          <ul class="feature-list">
+            <li>Explore Japan across three unique time periods</li>
+            <li>Learn vocabulary by photographing objects in the game</li>
+            <li>Practice pronunciation with interactive feedback</li>
+            <li>Engage in conversations with native-speaking characters</li>
+            <li>Complete tasks, mini-games, and quizzes to reinforce learning</li>
+            <li>Unlock achievements as you advance from beginner to intermediate</li>
+          </ul>
+          
+          <p>Nihon-GO! is perfect for learners who want to study Japanese through fun, immersive gameplay and cultural discovery.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Developers Panel -->
+    <div class="panel">
+        <h2 class="panel-title">👥 Meet the Developers</h2>
+        
+        <div class="developers-grid">
+            <div class="dev-card">
+                <div class="dev-image">
+                    <!-- Replace this src with your image path -->
+                    <img src="images/prof3.jpg" alt="Jan Lancelot Mailig" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-size: 3rem; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%;">👨‍💻</div>
+                </div>
+                <div class="dev-name">Jan Lancelot Mailig</div>
+                <div class="dev-role">Lead Developer</div>
+                <p class="dev-description">Passionate about promoting cross-cultural understanding through interactive experiences, with a strong interest in designing educational games that inspire learning and meaningful engagement.</p>
+                <div class="dev-skills">
+                    <span class="skill-tag">Leadership</span>
+                    <span class="skill-tag">Game Design</span>
+                    <span class="skill-tag">Education</span>
+                </div>
+            </div>
+
+            <div class="dev-card">
+                <div class="dev-image">
+                    <!-- Replace this src with your image path -->
+                    <img src="images/prof1.jpg" alt="Rafael Ramos" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-size: 3rem; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%;">🎮</div>
+                </div>
+                <div class="dev-name">Rafael Ramos</div>
+                <div class="dev-role">Game Designer & Developer</div>
+                <p class="dev-description">A college student specializing in game design and development, passionate about creating interactive experiences that entertain, educate, and inspire.</p>
+                <div class="dev-skills">
+                    <span class="skill-tag">Game Design</span>
+                    <span class="skill-tag">Development</span>
+                    <span class="skill-tag">Interactive Media</span>
+                </div>
+            </div>
+
+            <div class="dev-card">
+                <div class="dev-image">
+                    <!-- Replace this src with your image path -->
+                    <img src="images/prof2.jpg" alt="Sherwin Bernardo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-size: 3rem; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%;">🎨</div>
+                </div>
+                <div class="dev-name">Sherwin Bernardo</div>
+                <div class="dev-role">UI/UX Designer & Artist</div>
+                <p class="dev-description">A college student specializing in UI/UX design, passionate about crafting intuitive and visually engaging digital experiences.</p>
+                <div class="dev-skills">
+                    <span class="skill-tag">UI/UX Design</span>
+                    <span class="skill-tag">Visual Design</span>
+                    <span class="skill-tag">User Experience</span>
+                </div>
+            </div>
+
+            <div class="dev-card">
+                <div class="dev-image">
+                    <!-- Replace this src with your image path -->
+                    <img src="images/prof4.jpg" alt="Kim Ryan Nabo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-size: 3rem; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%;">🖌️</div>
+                </div>
+                <div class="dev-name">Kim Ryan Nabo</div>
+                <div class="dev-role">UI/UX Designer & Artist</div>
+                <p class="dev-description">A college student focused on UI/UX design, driven by a passion for creating user-friendly digital experiences.</p>
+                <div class="dev-skills">
+                    <span class="skill-tag">UI/UX Design</span>
+                    <span class="skill-tag">User Research</span>
+                    <span class="skill-tag">Digital Art</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBzTRVOsWz4aTten5XJMTenSNKnkGJRqSc",
+      authDomain: "nihongo-759e2.firebaseapp.com",
+      databaseURL: "https://nihongo-759e2-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "nihongo-759e2",
+      storageBucket: "nihongo-759e2.firebasestorage.app",
+      messagingSenderId: "1027374124864",
+      appId: "1:1027374124864:web:82d3079862f24b83deb4a5",
+      measurementId: "G-SX6FC8C1TP"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Slideshow functionality
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+
+    function showSlide(n) {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (n + totalSlides) % totalSlides;
+      slides[currentSlide].classList.add('active');
+      updateIndicators();
+    }
+
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+    }
+
+    function createIndicators() {
+      const indicatorContainer = document.getElementById('indicators');
+      for (let i = 0; i < totalSlides; i++) {
+        const indicator = document.createElement('div');
+        indicator.className = 'indicator';
+        if (i === 0) indicator.classList.add('active');
+        indicator.addEventListener('click', () => showSlide(i));
+        indicatorContainer.appendChild(indicator);
+      }
+    }
+
+    function updateIndicators() {
+      const indicators = document.querySelectorAll('.indicator');
+      indicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === currentSlide);
+      });
+    }
+
+    // Auto-advance slideshow
+    function startSlideshow() {
+      setInterval(nextSlide, 5000); // Change slide every 5 seconds
+    }
+
+    // Create floating sakura petals
+    function createSakuraPetals() {
+      const container = document.getElementById('sakuraContainer');
+      const isMobile = window.innerWidth <= 768;
+      const petalCount = isMobile ? 15 : 30;
+      
+      for (let i = 0; i < petalCount; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'sakura-petal';
+        petal.style.left = Math.random() * 100 + '%';
+        petal.style.animationDelay = Math.random() * 20 + 's';
+        petal.style.animationDuration = (Math.random() * 10 + 15) + 's';
+        
+        // Vary petal sizes and colors slightly
+        const size = Math.random() * 8 + 8;
+        petal.style.width = size + 'px';
+        petal.style.height = size + 'px';
+        
+        const colors = ['#ffb6c1', '#ffc0cb', '#f8bbd9', '#e91e63'];
+        petal.style.background = colors[Math.floor(Math.random() * colors.length)];
+        
+        container.appendChild(petal);
+      }
+    }
+
+    // Counter functionality with Firebase
+    let visitCount = 0;
+    const countElement = document.getElementById('downloadCount');
+    const errorElement = document.getElementById('errorMessage');
+    const counterRef = database.ref('nihonGoCounter/visits');
+    
+    // Initialize counter from Firebase
+    function initializeCounter() {
+      countElement.textContent = 'Loading...';
+      errorElement.style.display = 'none';
+      
+      // Listen for counter changes in real-time
+      counterRef.on('value', (snapshot) => {
+        try {
+          const count = snapshot.val();
+          visitCount = count || 0;
+          countElement.textContent = visitCount.toLocaleString();
+          errorElement.style.display = 'none';
+        } catch (error) {
+          console.error('Error reading counter from Firebase:', error);
+          showError('Failed to load counter from database');
+        }
+      }, (error) => {
+        console.error('Firebase connection error:', error);
+        showError('Database connection failed. Please check your Firebase configuration.');
+      });
+    }
+    
+    // Increment counter function
+    async function incrementCounter() {
+      try {
+        // Use Firebase transaction to safely increment the counter
+        await counterRef.transaction((currentCount) => {
+          return (currentCount || 0) + 1;
+        });
+        
+        // Show success animation
+        showSuccessAnimation();
+      } catch (error) {
+        console.error('Error updating counter in Firebase:', error);
+        showError('Failed to update counter');
+        // Show success animation anyway for better UX
+        showSuccessAnimation();
+      }
+    }
+
+    // Show error message
+    function showError(message) {
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+      // Fallback counter display
+      if (visitCount === 0) {
+        visitCount = Math.floor(Math.random() * 1000) + 500;
+        countElement.textContent = visitCount.toLocaleString() + ' (offline)';
+      }
+    }
+
+    // Success animation
+    function showSuccessAnimation() {
+      const success = document.createElement('div');
+      success.className = 'success-animation';
+      success.textContent = '🌸 Thank you for visiting!';
+      document.body.appendChild(success);
+      
+      setTimeout(() => {
+        success.remove();
+      }, 2000);
+    }
+
+    // GitHub button click handler
+    document.getElementById('githubBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      incrementCounter();
+      
+      // Add some sakura petals on click
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          const container = document.getElementById('sakuraContainer');
+          const petal = document.createElement('div');
+          petal.className = 'sakura-petal';
+          petal.style.left = Math.random() * 100 + '%';
+          petal.style.animationDuration = '3s';
+          petal.style.animationDelay = '0s';
+          container.appendChild(petal);
+          
+          setTimeout(() => petal.remove(), 3000);
+        }, i * 100);
+      }
+      
+      // Open GitHub link after animation
+      setTimeout(() => {
+        window.open('https://github.com/your-username/your-repo', '_blank');
+      }, 500);
+    });
+
+    // Slideshow controls
+    document.getElementById('nextBtn').addEventListener('click', nextSlide);
+    document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+    // Initialize everything
+    createSakuraPetals();
+    initializeCounter();
+    createIndicators();
+    startSlideshow();
+    
+    // Add gentle mouse interaction (desktop only)
+    if (!window.matchMedia('(max-width: 768px)').matches) {
+      document.addEventListener('mousemove', (e) => {
+        const petals = document.querySelectorAll('.sakura-petal');
+        const x = (e.clientX / window.innerWidth - 0.5) * 2;
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+        
+        petals.forEach((petal, index) => {
+          if (index % 3 === 0) { // Only affect every third petal for subtle effect
+            const speed = 0.3;
+            petal.style.transform += ` translate(${x * speed}px, ${y * speed}px)`;
+          }
+        });
+      });
+    }
+    
+    // Handle resize events
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const container = document.getElementById('sakuraContainer');
+        container.innerHTML = '';
+        createSakuraPetals();
+      }, 250);
+    });
+
+    // Add seasonal greeting
+    function addSeasonalGreeting() {
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      
+      if (month >= 3 && month <= 5) {
+        console.log('🌸 Spring is here! Cherry blossom season!');
+      }
+    }
+
+    // Keyboard navigation for slideshow
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        prevSlide();
+      } else if (e.key === 'ArrowRight') {
+        nextSlide();
+      }
+    });
+
+    addSeasonalGreeting();
+  </script>
+</body>
+</html>
