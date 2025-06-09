@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 export default function NihonGoLanding() {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -68,7 +69,6 @@ export default function NihonGoLanding() {
         setVisitCount(data.count)
       } catch (error) {
         console.error("Failed to load counter:", error)
-        // Fallback to localStorage for offline functionality
         const localCount = localStorage.getItem("nihongo-visits")
         setVisitCount(localCount ? Number.parseInt(localCount) : 1247)
       } finally {
@@ -88,42 +88,32 @@ export default function NihonGoLanding() {
       const isMobile = window.innerWidth <= 768
       const isTablet = window.innerWidth <= 1024
 
-      // Adjust petal count based on device performance
       let petalCount = 30
       if (isMobile) petalCount = 20
       if (isTablet && !isMobile) petalCount = 25
 
-      // Clear existing petals
       container.innerHTML = ""
 
       for (let i = 0; i < petalCount; i++) {
         const petal = document.createElement("div")
         petal.className = "sakura-petal"
 
-        // Random horizontal position
         petal.style.left = Math.random() * 100 + "%"
-
-        // Staggered animation delays
         petal.style.animationDelay = Math.random() * 20 + "s"
 
-        // Varied animation duration for natural movement
-        const duration = Math.random() * 8 + 12 // 12-20 seconds
+        const duration = Math.random() * 8 + 12
         petal.style.animationDuration = duration + "s"
 
-        // Vary petal sizes
-        const size = Math.random() * 6 + 8 // 8-14px
+        const size = Math.random() * 6 + 8
         petal.style.width = size + "px"
         petal.style.height = size + "px"
 
-        // Different petal colors
         const colors = ["#ffb6c1", "#ffc0cb", "#f8bbd9", "#e91e63", "#ff69b4"]
         petal.style.background = colors[Math.floor(Math.random() * colors.length)]
 
-        // Add slight rotation variation
         const rotation = Math.random() * 360
         petal.style.setProperty("--initial-rotation", rotation + "deg")
 
-        // Mobile-specific optimizations
         if (isMobile) {
           petal.style.willChange = "transform"
           petal.style.backfaceVisibility = "hidden"
@@ -135,7 +125,6 @@ export default function NihonGoLanding() {
 
     createSakuraPetals()
 
-    // Recreate petals on resize with debouncing
     let resizeTimeout: NodeJS.Timeout
     const handleResize = () => {
       clearTimeout(resizeTimeout)
@@ -149,7 +138,6 @@ export default function NihonGoLanding() {
     }
   }, [])
 
-  // Auto-advance slideshow
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length)
@@ -168,24 +156,20 @@ export default function NihonGoLanding() {
 
   const handleGitHubClick = async () => {
     try {
-      // Increment counter via API
       const response = await fetch("/api/counter", {
         method: "POST",
       })
       const data = await response.json()
       setVisitCount(data.count)
 
-      // Update localStorage as backup
       localStorage.setItem("nihongo-visits", data.count.toString())
     } catch (error) {
       console.error("Failed to increment counter:", error)
-      // Fallback to localStorage increment
       const newCount = visitCount + 1
       setVisitCount(newCount)
       localStorage.setItem("nihongo-visits", newCount.toString())
     }
 
-    // Show success animation
     const success = document.createElement("div")
     success.className = "success-animation"
     success.textContent = "🌸 Thank you for visiting!"
@@ -195,7 +179,6 @@ export default function NihonGoLanding() {
       success.remove()
     }, 2000)
 
-    // Add extra sakura burst effect
     if (sakuraContainerRef.current) {
       for (let i = 0; i < 8; i++) {
         setTimeout(() => {
@@ -216,7 +199,6 @@ export default function NihonGoLanding() {
     <div className="min-h-screen relative overflow-x-hidden">
       {/* Sticky Sakura Branches */}
       <div className="fixed inset-0 pointer-events-none z-10">
-        {/* Top Left Branch */}
         <div className="absolute top-0 left-0 w-48 h-48 md:w-64 md:h-64 opacity-30">
           <svg viewBox="0 0 200 200" className="w-full h-full">
             <path
@@ -234,7 +216,6 @@ export default function NihonGoLanding() {
           </svg>
         </div>
 
-        {/* Top Right Branch */}
         <div className="absolute top-0 right-0 w-48 h-48 md:w-64 md:h-64 opacity-30 transform scale-x-[-1]">
           <svg viewBox="0 0 200 200" className="w-full h-full">
             <path
@@ -252,7 +233,6 @@ export default function NihonGoLanding() {
           </svg>
         </div>
 
-        {/* Bottom Left Branch */}
         <div className="absolute bottom-0 left-0 w-36 h-36 md:w-48 md:h-48 opacity-25 transform rotate-180">
           <svg viewBox="0 0 150 150" className="w-full h-full">
             <path d="M10,10 Q25,30 40,25 Q55,20 70,35 Q85,50 100,40" stroke="#8B4513" strokeWidth="3" fill="none" />
@@ -262,7 +242,6 @@ export default function NihonGoLanding() {
           </svg>
         </div>
 
-        {/* Bottom Right Branch */}
         <div className="absolute bottom-0 right-0 w-36 h-36 md:w-48 md:h-48 opacity-25 transform rotate-180 scale-x-[-1]">
           <svg viewBox="0 0 150 150" className="w-full h-full">
             <path d="M10,10 Q25,30 40,25 Q55,20 70,35 Q85,50 100,40" stroke="#8B4513" strokeWidth="3" fill="none" />
@@ -272,7 +251,6 @@ export default function NihonGoLanding() {
           </svg>
         </div>
 
-        {/* Side Branches - Hidden on mobile for better performance */}
         <div className="hidden md:block absolute left-0 top-1/2 w-32 h-32 opacity-20 transform -translate-y-1/2">
           <svg viewBox="0 0 100 100" className="w-full h-full">
             <path d="M0,50 Q20,30 40,50 Q60,70 80,50" stroke="#8B4513" strokeWidth="2" fill="none" />
@@ -290,20 +268,15 @@ export default function NihonGoLanding() {
         </div>
       </div>
 
-      {/* Background */}
       <div className="fixed inset-0 bg-gradient-to-br from-pink-50 via-pink-100 to-rose-200" />
 
-      {/* Pattern Overlay */}
       <div className="fixed inset-0 opacity-30">
         <div className="absolute inset-0 bg-gradient-radial from-pink-200/20 via-transparent to-transparent" />
       </div>
 
-      {/* Enhanced Animated Sakura Petals */}
       <div ref={sakuraContainerRef} className="fixed inset-0 pointer-events-none z-20 overflow-hidden" />
 
-      {/* Main Content */}
       <div className="relative z-30 max-w-7xl mx-auto px-4 py-8">
-        {/* Header Section */}
         <div className="flex flex-col items-center justify-center min-h-screen text-center mb-16">
           <h1 className="text-4xl md:text-6xl lg:text-8xl font-black bg-gradient-to-r from-pink-600 via-rose-500 to-pink-400 bg-clip-text text-transparent mb-4 relative">
             Nihon-GO!
@@ -316,13 +289,12 @@ export default function NihonGoLanding() {
           </p>
         </div>
 
-        {/* GitHub Section */}
         <div className="bg-white/90 backdrop-blur-xl border-2 border-pink-200 rounded-3xl p-6 md:p-8 mb-8 text-center shadow-2xl">
           <button
             onClick={handleGitHubClick}
             className="inline-flex items-center gap-3 text-purple-700 hover:text-pink-600 font-medium text-base md:text-lg transition-all duration-300 px-6 md:px-8 py-3 md:py-4 border-2 border-purple-200 hover:border-pink-300 rounded-full bg-white/50 hover:bg-white/80 hover:-translate-y-1 hover:shadow-lg"
           >
-            <svg width="20" height="20" md:width="24" md:height="24" fill="currentColor" viewBox="0 0 24 24">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
             </svg>
             View on GitHub
@@ -341,9 +313,7 @@ export default function NihonGoLanding() {
           </div>
         </div>
 
-        {/* Content Grid */}
         <div className="grid lg:grid-cols-2 gap-6 md:gap-8 mb-8">
-          {/* Slideshow Panel */}
           <div className="lg:col-span-2 bg-white/90 backdrop-blur-xl border-2 border-pink-200 rounded-3xl p-6 md:p-8 shadow-2xl">
             <h2 className="text-xl md:text-2xl font-bold text-pink-600 mb-4 md:mb-6 flex items-center gap-2">
               🖼️ Game Screenshots
@@ -395,7 +365,6 @@ export default function NihonGoLanding() {
             </div>
           </div>
 
-          {/* Video Panel */}
           <div className="bg-white/90 backdrop-blur-xl border-2 border-pink-200 rounded-3xl p-6 md:p-8 shadow-2xl">
             <h2 className="text-xl md:text-2xl font-bold text-pink-600 mb-4 md:mb-6 flex items-center gap-2">
               🎥 Game Trailer
@@ -416,7 +385,6 @@ export default function NihonGoLanding() {
             </p>
           </div>
 
-          {/* Description Panel */}
           <div className="bg-white/90 backdrop-blur-xl border-2 border-pink-200 rounded-3xl p-6 md:p-8 shadow-2xl">
             <h2 className="text-xl md:text-2xl font-bold text-pink-600 mb-4 md:mb-6 flex items-center gap-2">
               📖 About the Game
@@ -454,7 +422,6 @@ export default function NihonGoLanding() {
           </div>
         </div>
 
-        {/* Developers Section */}
         <div className="bg-white/90 backdrop-blur-xl border-2 border-pink-200 rounded-3xl p-6 md:p-8 shadow-2xl">
           <h2 className="text-xl md:text-2xl font-bold text-pink-600 mb-6 md:mb-8 text-center flex items-center justify-center gap-2">
             👥 Meet the Developers
@@ -464,17 +431,18 @@ export default function NihonGoLanding() {
             {developers.map((dev, index) => (
               <div
                 key={index}
-                className="bg-white/80 backdrop-blur-sm border border-pink-200 rounded-2xl p-4 md:p-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group"
+                className="bg-white/80 backdrop-blur-sm border border-pink-200 rounded-2xl p-4 md:p-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group relative"
               >
-                <div className="relative w-20 h-20 md:w-24 md:h-24 mx-auto mb-3 md:mb-4">
-                  <Image
-                    src={dev.image || "/placeholder.svg"}
-                    alt={dev.name}
-                    fill
-                    className="rounded-full object-cover border-4 border-pink-200 group-hover:border-pink-400 transition-colors duration-300"
-                  />
-                  <div className="absolute -top-1 -right-1 text-sm md:text-lg animate-bounce">🌸</div>
-                </div>
+                <Avatar className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-3 md:mb-4 border-4 border-pink-200 group-hover:border-pink-400 transition-colors duration-300">
+                  <AvatarImage src={dev.image || "/placeholder.svg"} alt={dev.name} className="object-cover" />
+                  <AvatarFallback className="bg-gradient-to-br from-pink-200 to-rose-300 text-pink-700 font-bold text-lg md:text-xl">
+                    {dev.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute top-2 right-2 text-sm md:text-lg animate-bounce">🌸</div>
 
                 <h3 className="text-base md:text-lg font-bold text-pink-600 mb-1">{dev.name}</h3>
                 <p className="text-xs md:text-sm font-semibold text-purple-600 uppercase tracking-wide mb-2 md:mb-3">
@@ -592,7 +560,6 @@ export default function NihonGoLanding() {
           100% { transform: translate(-50%, -50%) scale(1); }
         }
 
-        /* Mobile optimizations */
         @media (max-width: 768px) {
           .sakura-petal {
             width: 10px;
